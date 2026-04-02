@@ -192,7 +192,7 @@ function SuccessScreen() {
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>
               The golf operations team will reach out to discuss scheduling and next steps for the 2026 summer season.
             </p>
-          <p className="text-center text-xs mt-6" style={{ color: 'rgba(255,255,255,0.2)', fontFamily: 'Work Sans' }}>Already applied? <a href="/portal" className="underline" style={{ color: 'rgba(255,255,255,0.4)' }}>Sign in to Staff Portal →</a></p>
+          <p className="text-center text-xs mt-6" style={{ color: 'rgba(255,255,255,0.2)', fontFamily: 'Work Sans' }}>Log hours &amp; update dates: <a href="/portal" className="underline" style={{ color: 'rgba(255,255,255,0.4)' }}>Staff Portal →</a></p>
         </div>
         </div>
       </main>
@@ -212,6 +212,8 @@ export default function ApplyPage() {
     returning: null,
     bagRoom: null,
   });
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [selectedDates, setSelectedDates] = useState([]);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -249,6 +251,8 @@ export default function ApplyPage() {
     if (!formData.phone.trim()) e.phone = 'Phone number is required';
     if (formData.returning === null) e.returning = 'Please select an option';
     if (formData.bagRoom === null) e.bagRoom = 'Please select an option';
+    if (!password || password.length < 6) e.password = 'Password must be at least 6 characters';
+    if (password !== confirmPassword) e.confirmPassword = 'Passwords do not match';
     // No hard date minimum — soft preference only
     return e;
   }
@@ -267,7 +271,7 @@ export default function ApplyPage() {
       const res = await fetch('/api/apply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, availableDates: selectedDates }),
+        body: JSON.stringify({ ...formData, availableDates: selectedDates, password }),
       });
       if (res.ok) {
         setSubmitted(true);
@@ -711,7 +715,42 @@ export default function ApplyPage() {
             </button>
           </FormSection>
 
-          {/* ── SUBMIT ── */}
+          {/* ── 05 Create Password ── */}
+          <FormSection number="05" title="Create Your Password" subtitle="Used to log into the Staff Portal to track hours and update your availability">
+            <div className="space-y-3">
+              <div>
+                <FieldLabel label="Password" required sublabel="At least 6 characters" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors(p => ({ ...p, password: null })); }}
+                  placeholder="Create a password"
+                  className={`form-input ${errors.password ? 'error' : ''}`}
+                  autoComplete="new-password"
+                />
+                <FieldError msg={errors.password} />
+              </div>
+              <div>
+                <FieldLabel label="Confirm Password" required />
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => { setConfirmPassword(e.target.value); if (errors.confirmPassword) setErrors(p => ({ ...p, confirmPassword: null })); }}
+                  placeholder="Repeat your password"
+                  className={`form-input ${errors.confirmPassword ? 'error' : ''}`}
+                  autoComplete="new-password"
+                />
+                <FieldError msg={errors.confirmPassword} />
+              </div>
+              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', fontFamily: 'Work Sans' }}>
+                You'll use this with your email to log into the{' '}
+                <a href="/portal" style={{ color: 'rgba(255,255,255,0.4)' }} className="underline">Staff Portal</a>
+                {' '}after applying.
+              </p>
+            </div>
+          </FormSection>
+
+          {/* ── SUBMIT ── */
           <div className="pt-2">
             <button type="submit" disabled={loading} className="btn-primary">
               {loading ? (

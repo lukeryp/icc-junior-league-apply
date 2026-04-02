@@ -1,0 +1,22 @@
+{
+  "name": "ICC Junior League",
+  "short_name": "ICC Staff",
+  "description": "Interlachen Country Club Junior Golf Staff Portal",
+  "start_url": "/portal",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#0d0d0d",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icc-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icc-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

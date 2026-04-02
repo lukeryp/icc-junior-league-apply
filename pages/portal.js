@@ -116,6 +116,45 @@ function Dashboard({ profile, onLogout }) {
   const [loggingHours, setLoggingHours] = useState(false);
   const [hoursError, setHoursError] = useState('');
 
+  const [installPrompt, setInstallPrompt] = useState(null);
+  const [notifStatus, setNotifStatus] = useState('default');
+
+  useEffect(() => {
+    // PWA install prompt
+    const handler = (e) => { e.preventDefault(); setInstallPrompt(e); };
+    window.addEventListener('beforeinstallprompt', handler);
+    // Notification status
+    if ('Notification' in window) setNotifStatus(Notification.permission);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  async function requestNotifications() {
+    if (!('Notification' in window)) return;
+    const permission = await Notification.requestPermission();
+    setNotifStatus(permission);
+    if (permission === 'granted' && 'serviceWorker' in navigator && process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY) {
+      try {
+        const reg = await navigator.serviceWorker.ready;
+        const sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+        });
+        await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, subscription: sub }),
+        });
+      } catch (err) { console.error('Push subscription failed:', err); }
+    }
+  }
+
+  async function installApp() {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    await installPrompt.userChoice;
+    setInstallPrompt(null);
+  }
+
   const email = typeof window !== 'undefined'
     ? localStorage.getItem('portal_email') || profile.email
     : profile.email;
@@ -190,7 +229,41 @@ function Dashboard({ profile, onLogout }) {
       </header>
 
       <div className="max-w-2xl mx-auto px-4 py-6">
-        {/* Summary cards */}
+        {/* PWA install + notification banner */}
+        {(installPrompt || notifStatus === 'default') && (
+          <div className="rounded-2xl p-4 mb-4 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between"
+            style={{ background: 'rgba(0,175,81,0.08)', border: '1px solid rgba(0,175,81,0.2)' }}>
+            <div>
+              <p className="text-sm font-semibold text-white">Get the app + turn on reminders</p>
+              <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                Add to your home screen and enable notifications for availability reminders.
+              </p>
+            </div>
+            <div className="flex gap-2 flex-shrink-0">
+              {notifStatus === 'default' && (
+                <button onClick={requestNotifications}
+                  className="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap"
+                  style={{ background: '#00af51', color: 'white' }}>
+                  🔔 Enable Alerts
+                </button>
+              )}
+              {notifStatus === 'granted' && (
+                <span className="px-4 py-2 rounded-xl text-xs font-bold"
+                  style={{ background: 'rgba(0,175,81,0.15)', color: '#00af51', border: '1px solid rgba(0,175,81,0.25)' }}>
+                  ✓ Alerts on
+                </span>
+              )}
+              {installPrompt && (
+                <button onClick={installApp}
+                  className="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap"
+                  style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.15)' }}>
+                  📲 Add to Home
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+                {/* Summary cards */}
         <div className="grid grid-cols-3 gap-3 mb-6">
           {[
             { label: 'Hours Worked', value: total, color: '#00af51', sub: 'logged' },
