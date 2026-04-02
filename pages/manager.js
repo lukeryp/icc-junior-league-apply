@@ -98,7 +98,7 @@ function LoginScreen({ password, setPassword, onSubmit, loading, error }) {
   );
 }
 
-function Dashboard({ submissions, total, filterDate, setFilterDate, sort, setSort, onLogout }) {
+function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDate, sort, setSort, onLogout }) {
   const [expandedId, setExpandedId] = useState(null);
 
   // Stats
@@ -154,7 +154,55 @@ function Dashboard({ submissions, total, filterDate, setFilterDate, sort, setSor
           ))}
         </div>
 
-        {/* Filters */}
+        {/* Date Coverage */}
+        <div className='glass-card rounded-2xl p-5 mb-4'>
+          <div className='flex items-center justify-between mb-4'>
+            <div>
+              <p className='text-xs font-bold uppercase tracking-widest text-white' style={{ fontFamily: 'Raleway' }}>Staff Coverage by Date</p>
+              <p className='text-[10px] mt-0.5' style={{ color: 'rgba(255,255,255,0.3)' }}>How many applicants are available each Tuesday</p>
+            </div>
+            <div className='flex items-center gap-3 text-[10px]' style={{ color: 'rgba(255,255,255,0.3)' }}>
+              <span className='flex items-center gap-1'><span className='w-2 h-2 rounded-sm inline-block' style={{ background: '#00af51' }}></span>3+</span>
+              <span className='flex items-center gap-1'><span className='w-2 h-2 rounded-sm inline-block' style={{ background: '#f4ee19' }}></span>1–2</span>
+              <span className='flex items-center gap-1'><span className='w-2 h-2 rounded-sm inline-block' style={{ background: 'rgba(255,255,255,0.1)' }}></span>0</span>
+            </div>
+          </div>
+          <div className='grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2'>
+            {TUESDAYS.map(({ date, label, month }) => {
+              const count = allSubmissions.filter(s => s.availableDates && s.availableDates.includes(date)).length;
+              const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+              const barColor = count >= 3 ? '#00af51' : count > 0 ? '#f4ee19' : 'rgba(255,255,255,0.07)';
+              const textColor = count >= 3 ? '#00af51' : count > 0 ? '#f4ee19' : 'rgba(255,255,255,0.2)';
+              return (
+                <button
+                  key={date}
+                  type='button'
+                  onClick={() => setFilterDate(filterDate === date ? '' : date)}
+                  className='rounded-xl p-3 text-center transition-all duration-150'
+                  style={{
+                    background: filterDate === date ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.03)',
+                    border: filterDate === date ? '1px solid rgba(255,255,255,0.18)' : '1px solid rgba(255,255,255,0.07)',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <div className='text-[9px] uppercase tracking-widest mb-1' style={{ color: 'rgba(255,255,255,0.25)' }}>
+                    {label.split(' ')[0]}
+                  </div>
+                  <div className='text-lg font-black leading-none mb-1' style={{ fontFamily: 'Raleway', color: textColor }}>
+                    {count}
+                  </div>
+                  <div className='text-[9px] mb-2' style={{ color: 'rgba(255,255,255,0.2)' }}>
+                    {label.split(' ')[1]}
+                  </div>
+                  <div className='h-1 rounded-full overflow-hidden' style={{ background: 'rgba(255,255,255,0.06)' }}>
+                    <div className='h-full rounded-full transition-all duration-300' style={{ width: pct + '%', background: barColor }} />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+                {/* Filters */}
         <div className="glass-card rounded-2xl p-4 mb-4 flex flex-wrap gap-3 items-center">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.5)' }}>
@@ -394,6 +442,7 @@ export default function ManagerPage() {
       ) : (
         <Dashboard
           submissions={displayed}
+          allSubmissions={submissions}
           total={submissions.length}
           filterDate={filterDate}
           setFilterDate={setFilterDate}
