@@ -55,7 +55,7 @@ function LoginScreen({ password, setPassword, onSubmit, loading, error }) {
           <div className="flex justify-center mb-5">
             <Image src="/icc-logo.png" alt="ICC" width={64} height={64} style={{ objectFit: 'contain', opacity: 0.9 }} />
           </div>
-          <p className="text-xs font-semibold tracking-[0.3em] uppercase mb-1" style={{ color: '#00af51' }}>
+          <p className="text-xs font-semibold tracking-[0.3em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>
             Interlachen Country Club
           </p>
           <h1 className="text-2xl font-bold text-white" style={{ fontFamily: 'Raleway' }}>
@@ -104,6 +104,19 @@ function LoginScreen({ password, setPassword, onSubmit, loading, error }) {
 
 function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDate, sort, setSort, onLogout }) {
   const [expandedId, setExpandedId] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [msgText, setMsgText] = useState('');
+  const [msgMode, setMsgMode] = useState('email');
+
+  // Helpers
+  const selectedSubs = submissions.filter(s => selectedIds.includes(s.id));
+  function toggleSelect(id) { setSelectedIds(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]); }
+  function selectAll() { setSelectedIds(displayed.map(s => s.id)); }
+  function clearSelect() { setSelectedIds([]); }
+  function sendEmail() {
+    const addrs = selectedSubs.map(s => s.email).join(',');
+    window.location.href = 'mailto:?bcc=' + encodeURIComponent(addrs) + '&subject=' + encodeURIComponent('Interlachen Junior League 2026') + '&body=' + encodeURIComponent(msgText);
+  }
 
   // Stats
   const returning = submissions.filter((s) => s.returning).length;
@@ -247,7 +260,82 @@ function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDa
           )}
         </div>
 
-        {/* Applicants list */}
+        {/* Messaging bar */}
+        {submissions.length > 0 && (
+          <div className="glass-card rounded-2xl p-4 mb-4">
+            <div className="flex flex-wrap items-center gap-3 mb-3">
+              <div className="flex gap-2">
+                <button type="button" onClick={selectAll}
+                  className="text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors"
+                  style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  Select All ({displayed.length})
+                </button>
+                {selectedIds.length > 0 && (
+                  <button type="button" onClick={clearSelect}
+                    className="text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors"
+                    style={{ background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.35)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                    Clear
+                  </button>
+                )}
+              </div>
+              {selectedIds.length > 0 && (
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
+                  style={{ background: 'rgba(0,175,81,0.12)', color: '#00af51', border: '1px solid rgba(0,175,81,0.2)' }}>
+                  {selectedIds.length} selected
+                </span>
+              )}
+            </div>
+            {selectedIds.length > 0 && (
+              <div className="space-y-3">
+                <div className="flex gap-1 p-1 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                  {[{ id: 'email', label: '✉ Email' }, { id: 'sms', label: '📱 SMS' }].map(m => (
+                    <button key={m.id} onClick={() => setMsgMode(m.id)}
+                      className="flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all"
+                      style={{ background: msgMode === m.id ? 'rgba(255,255,255,0.1)' : 'transparent', color: msgMode === m.id ? 'white' : 'rgba(255,255,255,0.35)' }}>
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+                {msgMode === 'email' && (
+                  <div className="space-y-2">
+                    <textarea
+                      value={msgText} onChange={e => setMsgText(e.target.value)}
+                      placeholder="Type your message… (opens your email app)"
+                      rows={3} className="w-full text-sm rounded-xl px-3 py-2.5 outline-none resize-none"
+                      style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', fontFamily: "'Work Sans'" }} />
+                    <button onClick={sendEmail}
+                      className="w-full py-2.5 rounded-xl text-sm font-bold transition-all"
+                      style={{ background: '#00af51', color: 'white' }}>
+                      Open Email → {selectedSubs.map(s => s.email).join(', ')}
+                    </button>
+                  </div>
+                )}
+                {msgMode === 'sms' && (
+                  <div>
+                    <p className="text-xs mb-2" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                      Copy these numbers into your texting app:
+                    </p>
+                    <div className="rounded-xl p-3 space-y-1.5"
+                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      {selectedSubs.map(s => (
+                        <div key={s.id} className="flex justify-between items-center">
+                          <span className="text-xs font-medium text-white">{s.fullName}</span>
+                          <span className="text-xs font-mono" style={{ color: '#00af51' }}>{s.phone}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <button onClick={() => { navigator.clipboard.writeText(selectedSubs.map(s => s.phone).join(', ')); }}
+                      className="w-full mt-2 py-2.5 rounded-xl text-sm font-bold transition-all"
+                      style={{ background: 'rgba(255,255,255,0.08)', color: 'white', border: '1px solid rgba(255,255,255,0.12)' }}>
+                      Copy All Numbers
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+                {/* Applicants list */}
         {submissions.length === 0 ? (
           <div className="glass-card rounded-2xl p-10 text-center">
             <p style={{ color: 'rgba(255,255,255,0.3)' }}>No applications yet.</p>
@@ -263,9 +351,22 @@ function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDa
                   style={{ border: expanded ? '1px solid rgba(0,175,81,0.3)' : '1px solid rgba(255,255,255,0.08)' }}
                 >
                   {/* Row summary */}
+                  <div className="flex items-center">
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); toggleSelect(sub.id); }}
+                      className="flex-shrink-0 w-10 h-full flex items-center justify-center pl-4"
+                      style={{ color: selectedIds.includes(sub.id) ? '#00af51' : 'rgba(255,255,255,0.15)' }}>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        {selectedIds.includes(sub.id)
+                          ? <rect width="16" height="16" rx="4" fill="#00af51"/><path d="M4 8l3 3 5-5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          : <rect width="15" height="15" x="0.5" y="0.5" rx="3.5" stroke="rgba(255,255,255,0.2)"/>}
+                      </svg>
+                    </button>
+                  </div>
                   <button
                     type="button"
-                    className="w-full text-left px-5 py-4 flex items-center gap-4"
+                    className="flex-1 text-left px-3 py-4 flex items-center gap-4"
                     onClick={() => setExpandedId(expanded ? null : sub.id)}
                   >
                     <div

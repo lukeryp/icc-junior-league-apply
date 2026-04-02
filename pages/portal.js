@@ -60,7 +60,7 @@ function LoginScreen({ onLogin }) {
           <div className="flex justify-center mb-5">
             <Image src="/icc-logo.png" alt="ICC" width={64} height={64} style={{ objectFit: 'contain', opacity: 0.9 }} />
           </div>
-          <p className="text-xs font-semibold tracking-[0.3em] uppercase mb-1" style={{ color: '#00af51' }}>
+          <p className="text-xs font-semibold tracking-[0.3em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.6)' }}>
             Interlachen Country Club
           </p>
           <h1 className="text-2xl font-bold text-white" style={{ fontFamily: 'Raleway' }}>Staff Portal</h1>

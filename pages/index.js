@@ -171,7 +171,7 @@ function SuccessScreen() {
             </svg>
           </div>
 
-          <div className="mb-2 text-xs font-semibold tracking-[0.3em] uppercase" style={{ color: '#00af51' }}>
+          <div className="mb-2 text-xs font-semibold tracking-[0.3em] uppercase" style={{ color: 'rgba(255,255,255,0.55)' }}>
             Interlachen Country Club
           </div>
           <h1 className="text-3xl font-extrabold mb-4 leading-tight" style={{ fontFamily: 'Raleway' }}>
@@ -360,7 +360,7 @@ export default function ApplyPage() {
             {/* Club name */}
             <p
               className="animate-fade-up-delay-1 text-xs font-semibold tracking-[0.35em] uppercase mb-1"
-              style={{ color: '#00af51' }}
+              style={{ color: 'rgba(255,255,255,0.6)' }}
             >
               Interlachen Country Club
             </p>
