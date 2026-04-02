@@ -248,7 +248,7 @@ export default function ApplyPage() {
     if (!formData.phone.trim()) e.phone = 'Phone number is required';
     if (formData.returning === null) e.returning = 'Please select an option';
     if (formData.bagRoom === null) e.bagRoom = 'Please select an option';
-    if (selectedDates.length < MIN_DATES) e.dates = `Select at least ${MIN_DATES} dates to continue`;
+    // No hard date minimum — soft preference only
     return e;
   }
 
@@ -474,7 +474,7 @@ export default function ApplyPage() {
               style={{ borderTop: '1px solid rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.4)' }}
             >
               <span style={{ color: '#f4ee19' }}>★</span> Candidates who are also interested in working in the
-              bag room are strongly preferred.
+              bag room are preferred.
             </div>
           </div>
         </section>
@@ -580,7 +580,7 @@ export default function ApplyPage() {
                 <FieldLabel
                   label="Interested in also working in the bag room?"
                   required
-                  sublabel="Candidates interested in bag room work are strongly preferred."
+                  sublabel="Candidates interested in bag room work are preferred."
                 />
                 <YesNoToggle
                   value={formData.bagRoom}
@@ -603,21 +603,23 @@ export default function ApplyPage() {
             {/* Counter header */}
             <div className="flex items-center justify-between mb-1">
               <p className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                Minimum {MIN_DATES} dates required
+                Select the Tuesdays you're available
               </p>
               <span
                 className="text-xs font-bold px-2.5 py-1 rounded-full transition-all duration-300"
                 style={{
-                  background: datesCount >= MIN_DATES ? 'rgba(0,175,81,0.15)' : 'rgba(255,255,255,0.05)',
-                  color: datesCount >= MIN_DATES ? '#00af51' : 'rgba(255,255,255,0.35)',
-                  border: `1px solid ${datesCount >= MIN_DATES ? 'rgba(0,175,81,0.3)' : 'rgba(255,255,255,0.08)'}`,
+                  background: datesCount > 0 ? 'rgba(0,175,81,0.15)' : 'rgba(255,255,255,0.05)',
+                  color: datesCount > 0 ? '#00af51' : 'rgba(255,255,255,0.35)',
+                  border: `1px solid ${datesCount > 0 ? 'rgba(0,175,81,0.3)' : 'rgba(255,255,255,0.08)'}`,
                 }}
               >
                 {datesCount} of {TUESDAYS.length} selected
               </span>
             </div>
 
-            <FieldError msg={errors.dates} />
+            <p className="text-xs mb-3" style={{ color: 'rgba(244,238,25,0.55)', fontFamily: 'Work Sans' }}>
+              If you do not know your dates yet you may leave blank, but we prefer candidates that can work at least 5 dates.
+            </p>
 
             {/* Progress bar */}
             <div className="h-1 rounded-full mb-5 mt-2 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
@@ -627,7 +629,9 @@ export default function ApplyPage() {
                   width: `${progressPct}%`,
                   background: datesCount >= MIN_DATES
                     ? 'linear-gradient(90deg, #00af51, #00d465)'
-                    : 'linear-gradient(90deg, #f4ee19, rgba(244,238,25,0.7))',
+                    : datesCount > 0
+                    ? 'linear-gradient(90deg, #f4ee19, rgba(244,238,25,0.7))'
+                    : 'transparent',
                 }}
               />
             </div>
