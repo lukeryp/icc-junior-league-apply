@@ -22,8 +22,8 @@ export default async function handler(req, res) {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return res.status(400).json({ error: 'Invalid email' });
   }
-  if (!Array.isArray(availableDates) || availableDates.length < 5) {
-    return res.status(400).json({ error: 'Must select at least 5 dates' });
+  if (!Array.isArray(availableDates)) {
+    return res.status(400).json({ error: 'Invalid dates' });
   }
 
   const submission = {
