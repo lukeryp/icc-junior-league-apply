@@ -1,6 +1,6 @@
 import { getSubmissions } from '../../lib/storage';
 
-const MANAGER_PASSWORD = process.env.MANAGER_PASSWORD || 'ICC2026';
+const MANAGER_PASSWORD = process.env.MANAGER_PASSWORD || '1909';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end();
