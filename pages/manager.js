@@ -40,6 +40,10 @@ function Badge({ children, green, yellow }) {
   );
 }
 
+function totalHours(hours) {
+  return (hours || []).reduce((sum, h) => sum + Number(h.hours), 0);
+}
+
 function LoginScreen({ password, setPassword, onSubmit, loading, error }) {
   return (
     <main
@@ -276,10 +280,11 @@ function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDa
                           {sub.fullName}
                         </span>
                         {sub.returning && <Badge green>Returning</Badge>}
+                        {totalHours(sub.hours) > 0 && <Badge green>{totalHours(sub.hours)}h worked</Badge>}
                         {sub.bagRoom && <Badge yellow>Bag Room</Badge>}
                       </div>
                       <p className="text-xs mt-0.5 truncate" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                        {sub.email} · {sub.availableDates.length} dates · {formatDate(sub.submittedAt)}
+                        {sub.email} · {sub.availableDates.length} dates · {totalHours(sub.hours)}h · {formatDate(sub.submittedAt)}
                       </p>
                     </div>
                     <svg

@@ -192,7 +192,8 @@ function SuccessScreen() {
             <p className="text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>
               The golf operations team will reach out to discuss scheduling and next steps for the 2026 summer season.
             </p>
-          </div>
+          <p className="text-center text-xs mt-6" style={{ color: 'rgba(255,255,255,0.2)', fontFamily: 'Work Sans' }}>Already applied? <a href="/portal" className="underline" style={{ color: 'rgba(255,255,255,0.4)' }}>Sign in to Staff Portal →</a></p>
+        </div>
         </div>
       </main>
     </>
