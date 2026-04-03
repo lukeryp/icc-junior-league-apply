@@ -32,16 +32,16 @@ function FormSection({ number, title, subtitle, children }) {
       <div className="flex items-start gap-3 mb-6">
         <span
           className="shrink-0 mt-0.5 text-[10px] font-bold tracking-widest px-2 py-1 rounded-lg"
-          style={{ fontFamily: 'Work Sans', background: 'rgba(0,175,81,0.12)', color: '#00af51' }}
+          style={{ fontFamily: 'proxima-nova, Helvetica Neue, sans-serif', background: 'rgba(158,129,47,0.1)', color: '#9e812f' }}
         >
           {number}
         </span>
         <div>
-          <h2 className="text-lg font-bold text-white leading-tight" style={{ fontFamily: 'Raleway' }}>
+          <h2 className="text-lg font-bold leading-tight" style={{ fontFamily: "'kepler-std', Georgia, serif", color: '#1a1a1a' }}>
             {title}
           </h2>
           {subtitle && (
-            <p className="text-xs mt-0.5" style={{ fontFamily: 'Work Sans', color: 'rgba(255,255,255,0.4)' }}>
+            <p className="text-xs mt-0.5" style={{ fontFamily: 'proxima-nova, Helvetica Neue, sans-serif', color: 'rgba(26,26,26,0.45)' }}>
               {subtitle}
             </p>
           )}
@@ -55,12 +55,12 @@ function FormSection({ number, title, subtitle, children }) {
 function FieldLabel({ label, required, sublabel }) {
   return (
     <div className="mb-1.5">
-      <span className="text-sm font-medium" style={{ fontFamily: 'Work Sans', color: 'rgba(255,255,255,0.8)' }}>
+      <span className="text-sm font-medium" style={{ fontFamily: 'proxima-nova, Helvetica Neue, sans-serif', color: 'rgba(26,26,26,0.75)' }}>
         {label}
-        {required && <span style={{ color: '#00af51' }}> *</span>}
+        {required && <span style={{ color: '#9e812f' }}> *</span>}
       </span>
       {sublabel && (
-        <p className="text-xs mt-0.5" style={{ fontFamily: 'Work Sans', color: 'rgba(255,255,255,0.35)' }}>
+        <p className="text-xs mt-0.5" style={{ fontFamily: 'proxima-nova, Helvetica Neue, sans-serif', color: 'rgba(26,26,26,0.4)' }}>
           {sublabel}
         </p>
       )}
@@ -71,7 +71,7 @@ function FieldLabel({ label, required, sublabel }) {
 function FieldError({ msg }) {
   if (!msg) return null;
   return (
-    <p className="text-xs mt-1.5" style={{ fontFamily: 'Work Sans', color: 'rgba(248,113,113,0.9)' }} data-field-error>
+    <p className="text-xs mt-1.5" style={{ fontFamily: 'proxima-nova, Helvetica Neue, sans-serif', color: 'rgba(185,28,28,0.85)' }} data-field-error>
       {msg}
     </p>
   );
@@ -91,13 +91,13 @@ function WordCountTextarea({ value, onChange, placeholder, maxWords }) {
         placeholder={placeholder}
         rows={4}
         className="form-input resize-none"
-        style={{ paddingBottom: '32px', fontFamily: 'Work Sans' }}
+        style={{ paddingBottom: '32px', fontFamily: 'proxima-nova, Helvetica Neue, sans-serif' }}
       />
       <div
         className="absolute bottom-3 right-3 text-[10px] font-semibold pointer-events-none"
         style={{
-          fontFamily: 'Work Sans',
-          color: atLimit ? 'rgba(248,113,113,0.9)' : nearLimit ? '#f4ee19' : 'rgba(255,255,255,0.2)',
+          fontFamily: 'proxima-nova, Helvetica Neue, sans-serif',
+          color: atLimit ? 'rgba(185,28,28,0.8)' : nearLimit ? '#9e812f' : 'rgba(26,26,26,0.25)',
           transition: 'color 0.2s',
         }}
       >
@@ -123,17 +123,19 @@ function YesNoToggle({ value, onChange }) {
             onClick={() => onChange(val)}
             className="flex-1 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
             style={{
-              fontFamily: 'Work Sans',
+              fontFamily: 'proxima-nova, Helvetica Neue, sans-serif',
               background: selected
-                ? isYes ? '#00af51' : 'rgba(239,68,68,0.6)'
-                : 'rgba(255,255,255,0.05)',
+                ? isYes ? '#9e812f' : 'rgba(185,28,28,0.1)'
+                : 'white',
               border: `1px solid ${
                 selected
-                  ? isYes ? '#00af51' : 'rgba(239,68,68,0.6)'
-                  : 'rgba(255,255,255,0.1)'
+                  ? isYes ? '#9e812f' : 'rgba(185,28,28,0.4)'
+                  : 'rgba(0,0,0,0.12)'
               }`,
-              color: selected ? 'white' : 'rgba(255,255,255,0.4)',
-              boxShadow: selected && isYes ? '0 4px 16px rgba(0,175,81,0.25)' : 'none',
+              color: selected
+                ? isYes ? 'white' : 'rgba(185,28,28,0.85)'
+                : 'rgba(26,26,26,0.45)',
+              boxShadow: selected && isYes ? '0 2px 10px rgba(158,129,47,0.2)' : 'none',
             }}
           >
             {label}
@@ -148,52 +150,50 @@ function SuccessScreen() {
   return (
     <>
       <Head>
-        <title>Application Submitted — ICC Junior League</title>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;800;900&family=Work+Sans:wght@300;400;500;600&display=swap"
-          rel="stylesheet"
-        />
+        <title>Application Submitted — Interlachen Country Club Junior League</title>
       </Head>
       <main
-        className="min-h-screen flex flex-col items-center justify-center px-6 text-white"
+        className="min-h-screen flex flex-col items-center justify-center px-6"
         style={{
-          background: 'radial-gradient(ellipse 90% 70% at 50% 50%, rgba(0,175,81,0.1) 0%, #0d0d0d 65%)',
-          fontFamily: "'Work Sans', sans-serif",
+          background: '#faf9f7',
+          fontFamily: "proxima-nova, 'Helvetica Neue', sans-serif",
         }}
       >
         <div className="text-center max-w-sm animate-fade-up">
           <div
             className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-7 animate-pulse-green"
-            style={{ background: 'linear-gradient(135deg, #00af51, #00c95d)', boxShadow: '0 0 48px rgba(0,175,81,0.35)' }}
+            style={{ background: 'linear-gradient(135deg, #9e812f, #b89540)', boxShadow: '0 4px 24px rgba(158,129,47,0.25)' }}
           >
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
 
-          <div className="mb-2 text-xs font-semibold tracking-[0.3em] uppercase" style={{ color: 'rgba(255,255,255,0.55)' }}>
+          <div className="mb-2 text-xs font-semibold tracking-[0.3em] uppercase" style={{ color: 'rgba(26,26,26,0.45)' }}>
             Interlachen Country Club
           </div>
-          <h1 className="text-3xl font-extrabold mb-4 leading-tight" style={{ fontFamily: 'Raleway' }}>
+          <h1 className="text-3xl font-extrabold mb-4 leading-tight" style={{ fontFamily: "'kepler-std', Georgia, serif", color: '#1a1a1a' }}>
             Application Received
           </h1>
-          <p className="leading-relaxed mb-8 text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
+          <p className="leading-relaxed mb-8 text-sm" style={{ color: 'rgba(26,26,26,0.55)' }}>
             Thank you for your interest in the Interlachen Junior League summer staff. We'll review your
             application and be in touch soon.
           </p>
 
           <div className="glass-card rounded-2xl p-5">
             <div className="flex items-center gap-3 mb-1">
-              <span style={{ color: '#f4ee19' }}>⛳</span>
-              <span className="text-xs font-semibold tracking-wide" style={{ color: 'rgba(255,255,255,0.5)' }}>
+              <span style={{ color: '#9e812f' }}>⛳</span>
+              <span className="text-xs font-semibold tracking-wide" style={{ color: 'rgba(26,26,26,0.5)' }}>
                 What's Next
               </span>
             </div>
-            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            <p className="text-sm" style={{ color: 'rgba(26,26,26,0.5)' }}>
               The golf operations team will reach out to discuss scheduling and next steps for the 2026 summer season.
             </p>
-          <p className="text-center text-xs mt-6" style={{ color: 'rgba(255,255,255,0.2)', fontFamily: 'Work Sans' }}>Log hours &amp; update dates: <a href="/portal" className="underline" style={{ color: 'rgba(255,255,255,0.4)' }}>Staff Portal →</a></p>
-        </div>
+            <p className="text-center text-xs mt-6" style={{ color: 'rgba(26,26,26,0.3)', fontFamily: 'proxima-nova, Helvetica Neue, sans-serif' }}>
+              Log hours &amp; update dates: <a href="/portal" className="underline" style={{ color: 'rgba(26,26,26,0.5)' }}>Staff Portal →</a>
+            </p>
+          </div>
         </div>
       </main>
     </>
@@ -230,7 +230,6 @@ export default function ApplyPage() {
   function updateTextarea(field) {
     return (e) => {
       const val = e.target.value;
-      // Allow editing as long as we're not adding more words beyond the limit
       const words = val.trim() === '' ? [] : val.trim().split(/\s+/).filter(Boolean);
       if (words.length <= MAX_WORDS) {
         setFormData((p) => ({ ...p, [field]: val }));
@@ -253,7 +252,6 @@ export default function ApplyPage() {
     if (formData.bagRoom === null) e.bagRoom = 'Please select an option';
     if (!password || password.length < 6) e.password = 'Password must be at least 6 characters';
     if (password !== confirmPassword) e.confirmPassword = 'Passwords do not match';
-    // No hard date minimum — soft preference only
     return e;
   }
 
@@ -294,31 +292,25 @@ export default function ApplyPage() {
   return (
     <>
       <Head>
-        <title>Apply — ICC Junior League Summer Golf Staff 2026</title>
+        <title>Interlachen Country Club Junior League Staff Application 2026</title>
         <meta
           name="description"
-          content="Now hiring summer golf staff for the Interlachen Junior League. $15/hr plus practice privileges at Interlachen Country Club."
+          content="Now hiring summer golf staff for the Interlachen Country Club Junior League. $15/hr plus practice privileges."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-        <meta name="theme-color" content="#0d0d0d" />
-        <meta property="og:title" content="Now Hiring — ICC Junior League Summer Staff 2026" />
+        <meta name="theme-color" content="#faf9f7" />
+        <meta property="og:title" content="Interlachen Country Club — Junior League Staff Application 2026" />
         <meta property="og:description" content="$15/hr + practice privileges at Interlachen Country Club. Walk with junior golfers this summer. Apply now." />
         <meta property="og:type" content="website" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700;800;900&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"
-          rel="stylesheet"
-        />
       </Head>
 
-      <main className="min-h-screen text-white" style={{ fontFamily: "'Work Sans', sans-serif", background: '#0d0d0d' }}>
+      <main className="min-h-screen" style={{ fontFamily: "proxima-nova, 'Helvetica Neue', sans-serif", background: '#faf9f7' }}>
 
         {/* ═══ HERO ═══════════════════════════════════════════════════════════ */}
         <section
           className="relative overflow-hidden flex flex-col items-center text-center"
           style={{
-            background: 'radial-gradient(ellipse 100% 80% at 50% -5%, rgba(0,175,81,0.18) 0%, rgba(13,13,13,0) 55%), #0d0d0d',
+            background: 'radial-gradient(ellipse 100% 80% at 50% -5%, rgba(158,129,47,0.1) 0%, transparent 60%), #faf9f7',
             paddingTop: '56px',
             paddingBottom: '48px',
             paddingLeft: '24px',
@@ -330,11 +322,11 @@ export default function ApplyPage() {
             className="absolute inset-0 pointer-events-none"
             style={{
               backgroundImage:
-                'linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)',
+                'linear-gradient(rgba(0,0,0,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.025) 1px, transparent 1px)',
               backgroundSize: '48px 48px',
             }}
           />
-          {/* Green glow ring at top */}
+          {/* Soft gold glow at top */}
           <div
             className="absolute pointer-events-none"
             style={{
@@ -344,13 +336,13 @@ export default function ApplyPage() {
               width: '500px',
               height: '500px',
               borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(0,175,81,0.12) 0%, transparent 65%)',
+              background: 'radial-gradient(circle, rgba(158,129,47,0.07) 0%, transparent 65%)',
             }}
           />
 
           <div className="relative z-10 flex flex-col items-center w-full max-w-lg">
             {/* ICC Logo */}
-            <div className="mb-6 animate-fade-up" style={{ filter: 'drop-shadow(0 0 24px rgba(0,175,81,0.3))' }}>
+            <div className="mb-6 animate-fade-up">
               <Image
                 src="/icc-logo.png"
                 alt="Interlachen Country Club"
@@ -364,58 +356,72 @@ export default function ApplyPage() {
             {/* Club name */}
             <p
               className="animate-fade-up-delay-1 text-xs font-semibold tracking-[0.35em] uppercase mb-1"
-              style={{ color: 'rgba(255,255,255,0.6)' }}
+              style={{ color: 'rgba(26,26,26,0.45)' }}
             >
               Interlachen Country Club
             </p>
 
-            {/* Thin divider */}
+            {/* EST. 1909 */}
+            <p
+              className="animate-fade-up-delay-1 text-[10px] tracking-[0.25em] uppercase mb-2"
+              style={{ color: '#9e812f', fontFamily: "'kepler-std', Georgia, serif", fontStyle: 'italic' }}
+            >
+              Est. 1909
+            </p>
+
+            {/* Thin gold divider */}
             <div
               className="animate-fade-up-delay-1 w-16 h-px my-3"
-              style={{ background: 'linear-gradient(90deg, transparent, rgba(0,175,81,0.5), transparent)' }}
+              style={{ background: 'linear-gradient(90deg, transparent, rgba(158,129,47,0.4), transparent)' }}
             />
 
             {/* Title */}
             <h1
               className="animate-fade-up-delay-2 font-extrabold leading-tight mb-1"
-              style={{ fontFamily: 'Raleway', fontSize: 'clamp(32px, 9vw, 50px)' }}
+              style={{ fontFamily: "'kepler-std', Georgia, serif", fontSize: 'clamp(28px, 8vw, 46px)', color: '#1a1a1a' }}
             >
               Junior League
             </h1>
             <h2
-              className="animate-fade-up-delay-2 font-light mb-7"
-              style={{ fontFamily: 'Raleway', fontSize: 'clamp(20px, 5vw, 28px)', color: 'rgba(255,255,255,0.65)' }}
+              className="animate-fade-up-delay-2 font-light mb-3"
+              style={{ fontFamily: "'kepler-std', Georgia, serif", fontSize: 'clamp(18px, 4.5vw, 26px)', color: 'rgba(26,26,26,0.55)' }}
             >
-              Summer Golf Staff
+              Staff Application 2026
             </h2>
+            <p
+              className="animate-fade-up-delay-2 text-xs tracking-[0.2em] uppercase mb-7"
+              style={{ color: '#9e812f', fontFamily: "'kepler-std', Georgia, serif", fontStyle: 'italic', letterSpacing: '0.18em' }}
+            >
+              Enriching The Lives Of Our Members
+            </p>
 
             {/* Badges */}
             <div className="animate-fade-up-delay-3 flex flex-wrap justify-center gap-2 mb-8">
               <span
                 className="px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide"
-                style={{ background: '#00af51', color: 'white', boxShadow: '0 2px 12px rgba(0,175,81,0.4)' }}
+                style={{ background: '#9e812f', color: 'white', boxShadow: '0 2px 8px rgba(158,129,47,0.3)' }}
               >
                 Now Hiring
               </span>
               <span
                 className="px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide"
                 style={{
-                  background: 'rgba(244,238,25,0.08)',
-                  color: '#f4ee19',
-                  border: '1px solid rgba(244,238,25,0.25)',
+                  background: 'rgba(158,129,47,0.1)',
+                  color: '#9e812f',
+                  border: '1px solid rgba(158,129,47,0.25)',
                 }}
               >
                 $15 / hr
               </span>
               <span
                 className="px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide"
-                style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.1)' }}
+                style={{ background: 'white', color: 'rgba(26,26,26,0.5)', border: '1px solid rgba(0,0,0,0.1)' }}
               >
                 Summer 2026
               </span>
               <span
                 className="px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide"
-                style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.1)' }}
+                style={{ background: 'white', color: 'rgba(26,26,26,0.5)', border: '1px solid rgba(0,0,0,0.1)' }}
               >
                 Tuesdays
               </span>
@@ -428,7 +434,7 @@ export default function ApplyPage() {
                 height="22"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="rgba(255,255,255,0.2)"
+                stroke="rgba(26,26,26,0.2)"
                 strokeWidth="1.5"
                 style={{ animation: 'bounce 2s infinite' }}
               >
@@ -451,11 +457,11 @@ export default function ApplyPage() {
                 <div className="text-xl mb-2 leading-none">{icon}</div>
                 <div
                   className="text-[9px] uppercase tracking-widest font-semibold mb-1"
-                  style={{ color: 'rgba(255,255,255,0.35)' }}
+                  style={{ color: 'rgba(26,26,26,0.35)' }}
                 >
                   {label}
                 </div>
-                <div className="text-sm font-medium leading-snug" style={{ color: 'rgba(255,255,255,0.9)' }}>
+                <div className="text-sm font-medium leading-snug" style={{ color: 'rgba(26,26,26,0.85)' }}>
                   {value}
                 </div>
               </div>
@@ -464,21 +470,21 @@ export default function ApplyPage() {
 
           <div className="glass-card rounded-2xl p-5">
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-1 h-4 rounded-full" style={{ background: '#00af51' }} />
-              <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: '#00af51' }}>
+              <div className="w-1 h-4 rounded-full" style={{ background: '#9e812f' }} />
+              <h3 className="text-xs font-bold uppercase tracking-widest" style={{ color: '#9e812f' }}>
                 About the Role
               </h3>
             </div>
-            <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>
+            <p className="text-sm leading-relaxed" style={{ color: 'rgba(26,26,26,0.6)' }}>
               Walk alongside junior golfers during their rounds at Meadow Brook on Tuesdays throughout the
               summer. You'll help with safety, golf etiquette, and course management. Each day you work earns
               one day of practice privileges at Interlachen Country Club.
             </p>
             <div
               className="mt-3 pt-3 text-xs leading-relaxed"
-              style={{ borderTop: '1px solid rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.4)' }}
+              style={{ borderTop: '1px solid rgba(0,0,0,0.07)', color: 'rgba(26,26,26,0.45)' }}
             >
-              <span style={{ color: '#f4ee19' }}>★</span> Candidates who are also interested in working in the
+              <span style={{ color: '#9e812f' }}>★</span> Candidates who are also interested in working in the
               bag room are preferred.
             </div>
           </div>
@@ -607,35 +613,35 @@ export default function ApplyPage() {
           >
             {/* Counter header */}
             <div className="flex items-center justify-between mb-1">
-              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>
+              <p className="text-xs" style={{ color: 'rgba(26,26,26,0.4)' }}>
                 Select the Tuesdays you're available
               </p>
               <span
                 className="text-xs font-bold px-2.5 py-1 rounded-full transition-all duration-300"
                 style={{
-                  background: datesCount > 0 ? 'rgba(0,175,81,0.15)' : 'rgba(255,255,255,0.05)',
-                  color: datesCount > 0 ? '#00af51' : 'rgba(255,255,255,0.35)',
-                  border: `1px solid ${datesCount > 0 ? 'rgba(0,175,81,0.3)' : 'rgba(255,255,255,0.08)'}`,
+                  background: datesCount > 0 ? 'rgba(158,129,47,0.1)' : 'rgba(0,0,0,0.05)',
+                  color: datesCount > 0 ? '#9e812f' : 'rgba(26,26,26,0.35)',
+                  border: `1px solid ${datesCount > 0 ? 'rgba(158,129,47,0.25)' : 'rgba(0,0,0,0.08)'}`,
                 }}
               >
                 {datesCount} of {TUESDAYS.length} selected
               </span>
             </div>
 
-            <p className="text-xs mb-3" style={{ color: 'rgba(244,238,25,0.55)', fontFamily: 'Work Sans' }}>
+            <p className="text-xs mb-3" style={{ color: 'rgba(158,129,47,0.7)', fontFamily: 'proxima-nova, Helvetica Neue, sans-serif' }}>
               If you do not know your dates yet you may leave blank, but we prefer candidates that can work at least 5 dates.
             </p>
 
             {/* Progress bar */}
-            <div className="h-1 rounded-full mb-5 mt-2 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+            <div className="h-1 rounded-full mb-5 mt-2 overflow-hidden" style={{ background: 'rgba(0,0,0,0.07)' }}>
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{
                   width: `${progressPct}%`,
                   background: datesCount >= MIN_DATES
-                    ? 'linear-gradient(90deg, #00af51, #00d465)'
+                    ? 'linear-gradient(90deg, #9e812f, #b89540)'
                     : datesCount > 0
-                    ? 'linear-gradient(90deg, #f4ee19, rgba(244,238,25,0.7))'
+                    ? 'linear-gradient(90deg, #9e812f, rgba(158,129,47,0.7))'
                     : 'transparent',
                 }}
               />
@@ -650,7 +656,7 @@ export default function ApplyPage() {
                   <div key={month}>
                     <p
                       className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2.5"
-                      style={{ color: 'rgba(255,255,255,0.25)' }}
+                      style={{ color: 'rgba(26,26,26,0.3)' }}
                     >
                       {month} 2026
                     </p>
@@ -664,28 +670,28 @@ export default function ApplyPage() {
                             onClick={() => toggleDate(date)}
                             className="py-3.5 px-2 rounded-2xl text-center transition-all duration-200 active:scale-95"
                             style={{
-                              background: selected ? '#00af51' : 'rgba(255,255,255,0.04)',
-                              border: `1px solid ${selected ? '#00af51' : 'rgba(255,255,255,0.08)'}`,
-                              boxShadow: selected ? '0 4px 16px rgba(0,175,81,0.25)' : 'none',
+                              background: selected ? '#9e812f' : 'white',
+                              border: `1px solid ${selected ? '#9e812f' : 'rgba(0,0,0,0.1)'}`,
+                              boxShadow: selected ? '0 2px 10px rgba(158,129,47,0.2)' : '0 1px 2px rgba(0,0,0,0.04)',
                               transform: selected ? 'scale(1.02)' : 'scale(1)',
                             }}
                           >
                             <div
                               className="text-[9px] font-bold tracking-widest uppercase"
-                              style={{ color: selected ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.3)' }}
+                              style={{ color: selected ? 'rgba(255,255,255,0.75)' : 'rgba(26,26,26,0.3)' }}
                             >
                               Tue
                             </div>
                             <div
                               className="text-sm font-bold mt-0.5"
-                              style={{ fontFamily: 'Raleway', color: selected ? 'white' : 'rgba(255,255,255,0.55)' }}
+                              style={{ fontFamily: "'kepler-std', Georgia, serif", color: selected ? 'white' : 'rgba(26,26,26,0.7)' }}
                             >
                               {label}
                             </div>
                             <div
                               className="text-[11px] mt-0.5 transition-opacity duration-200"
                               style={{
-                                color: selected ? 'rgba(255,255,255,0.8)' : 'transparent',
+                                color: selected ? 'rgba(255,255,255,0.85)' : 'transparent',
                                 fontWeight: 700,
                               }}
                             >
@@ -709,7 +715,7 @@ export default function ApplyPage() {
                 )
               }
               className="mt-4 text-xs font-medium transition-colors duration-200"
-              style={{ color: 'rgba(255,255,255,0.25)', fontFamily: 'Work Sans' }}
+              style={{ color: 'rgba(26,26,26,0.3)', fontFamily: 'proxima-nova, Helvetica Neue, sans-serif' }}
             >
               {selectedDates.length === TUESDAYS.length ? 'Deselect all' : 'Select all dates'}
             </button>
@@ -742,22 +748,22 @@ export default function ApplyPage() {
                 />
                 <FieldError msg={errors.confirmPassword} />
               </div>
-              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.25)', fontFamily: 'Work Sans' }}>
+              <p className="text-xs" style={{ color: 'rgba(26,26,26,0.3)', fontFamily: 'proxima-nova, Helvetica Neue, sans-serif' }}>
                 You'll use this with your email to log into the{' '}
-                <a href="/portal" style={{ color: 'rgba(255,255,255,0.4)' }} className="underline">Staff Portal</a>
+                <a href="/portal" style={{ color: 'rgba(26,26,26,0.5)' }} className="underline">Staff Portal</a>
                 {' '}after applying.
               </p>
             </div>
           </FormSection>
 
-          {/* ── SUBMIT ── */
+          {/* ── SUBMIT ── */}
           <div className="pt-2">
             <button type="submit" disabled={loading} className="btn-primary">
               {loading ? (
                 <span className="flex items-center justify-center gap-2.5">
                   <span
                     className="inline-block w-4 h-4 rounded-full border-2 animate-spin-slow"
-                    style={{ borderColor: 'rgba(255,255,255,0.2)', borderTopColor: 'white' }}
+                    style={{ borderColor: 'rgba(255,255,255,0.25)', borderTopColor: 'white' }}
                   />
                   Submitting…
                 </span>
@@ -765,7 +771,7 @@ export default function ApplyPage() {
                 'Submit Application →'
               )}
             </button>
-            <p className="text-center text-xs mt-3" style={{ color: 'rgba(255,255,255,0.2)', fontFamily: 'Work Sans' }}>
+            <p className="text-center text-xs mt-3" style={{ color: 'rgba(26,26,26,0.25)', fontFamily: 'proxima-nova, Helvetica Neue, sans-serif' }}>
               Interlachen Country Club · Junior League Summer Staff 2026
             </p>
           </div>

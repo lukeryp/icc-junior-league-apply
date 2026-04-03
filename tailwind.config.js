@@ -4,9 +4,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'icc-green': '#00af51',
-        'icc-yellow': '#f4ee19',
-        'icc-black': '#0d0d0d',
+        'icc-gold': '#9e812f',
+        'icc-cream': '#faf9f7',
+        'icc-dark': '#1a1a1a',
       },
     },
   },
