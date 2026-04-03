@@ -1,16 +1,6 @@
 import { getSubmissions } from '../../lib/storage';
-
-
-
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end();
-
-  const { password } = req.query;
-
-  if (!password || password !== MANAGER_PASSWORD) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
   try {
     const submissions = await getSubmissions();
     return res.status(200).json(submissions);
