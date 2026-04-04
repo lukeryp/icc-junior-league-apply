@@ -840,35 +840,51 @@ export default function ManagerPage() {
   const [filterDate, setFilterDate] = useState('');
   const [sort, setSort] = useState('newest');
 
+  const [pinLoading, setPinLoading] = useState(false);
+
   useEffect(() => {
-    if (typeof window !== 'undefined' && sessionStorage.getItem('mgr_authed') === 'true') {
+    if (typeof window === 'undefined') return;
+    const saved = sessionStorage.getItem('mgr_pin');
+    if (saved) {
+      setPin(saved);
       setPinAuthed(true);
     }
   }, []);
 
   useEffect(() => {
-    if (pinAuthed) fetchSubmissions();
-  }, [pinAuthed]);
+    if (pinAuthed && pin) fetchSubmissions(pin);
+  }, [pinAuthed]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  async function fetchSubmissions() {
+  async function fetchSubmissions(pw) {
     try {
-      const res = await fetch('/api/submissions?password=1909');
+      const res = await fetch('/api/submissions?password=' + encodeURIComponent(pw || pin));
       if (res.ok) setSubmissions(await res.json());
     } catch { /* silent refresh */ }
   }
 
-  function handlePinSubmit(e) {
+  async function handlePinSubmit(e) {
     e.preventDefault();
-    if (pin === '1909') {
-      sessionStorage.setItem('mgr_authed', 'true');
-      setPinAuthed(true);
-    } else {
-      setPinError('Incorrect PIN. Please try again.');
+    setPinLoading(true);
+    setPinError('');
+    try {
+      const res = await fetch('/api/submissions?password=' + encodeURIComponent(pin));
+      if (res.ok) {
+        sessionStorage.setItem('mgr_pin', pin);
+        setSubmissions(await res.json());
+        setPinAuthed(true);
+      } else {
+        setPinError('Incorrect PIN. Please try again.');
+        setPin('');
+      }
+    } catch {
+      setPinError('Connection error. Try again.');
+    } finally {
+      setPinLoading(false);
     }
   }
 
   function handleLogout() {
-    sessionStorage.removeItem('mgr_authed');
+    sessionStorage.removeItem('mgr_pin');
     setPinAuthed(false);
     setSubmissions([]);
     setPin('');
@@ -894,7 +910,7 @@ export default function ManagerPage() {
           password={pin}
           setPassword={setPin}
           onSubmit={handlePinSubmit}
-          loading={false}
+          loading={pinLoading}
           error={pinError}
         />
       ) : (
@@ -907,7 +923,7 @@ export default function ManagerPage() {
           sort={sort}
           setSort={setSort}
           onLogout={handleLogout}
-          managerPassword="1909"
+          managerPassword={pin}
           onRefresh={fetchSubmissions}
         />
       )}
