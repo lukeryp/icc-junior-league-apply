@@ -17,7 +17,6 @@ const TUESDAYS = [
   { date: '2026-08-11', label: 'Aug 11', month: 'August' },
 ];
 
-const MIN_DATES = 5;
 const MAX_WORDS = 100;
 
 function countWords(text) {
@@ -638,7 +637,7 @@ export default function ApplyPage() {
                 className="h-full rounded-full transition-all duration-500"
                 style={{
                   width: `${progressPct}%`,
-                  background: datesCount >= MIN_DATES
+                  background: datesCount >= 5
                     ? 'linear-gradient(90deg, #9e812f, #b89540)'
                     : datesCount > 0
                     ? 'linear-gradient(90deg, #9e812f, rgba(158,129,47,0.7))'
