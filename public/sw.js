@@ -24,9 +24,12 @@ self.addEventListener('push', (e) => {
 });
 
 // Notification click — open portal
+// Only navigate to relative (same-origin) paths to prevent open-redirect
 self.addEventListener('notificationclick', (e) => {
   e.notification.close();
-  const url = e.notification.data?.url || '/portal';
+  const rawUrl = e.notification.data?.url || '/portal';
+  // Restrict to relative paths; reject absolute URLs
+  const url = typeof rawUrl === 'string' && rawUrl.startsWith('/') ? rawUrl : '/portal';
   e.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
       const match = clients.find(c => c.url.includes('/portal'));

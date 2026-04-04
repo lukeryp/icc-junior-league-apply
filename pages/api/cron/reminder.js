@@ -39,8 +39,8 @@ export default async function handler(req, res) {
     ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN) : null;
 
   // Web Push
-  if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
-    webpush.setVapidDetails('mailto:luke@rypgolf.com', process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
+  if (process.env.VAPID_SUBJECT && process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+    webpush.setVapidDetails(process.env.VAPID_SUBJECT, process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
   }
 
   const submissions = await getSubmissions();
@@ -57,8 +57,8 @@ export default async function handler(req, res) {
       // SMS
       if (twilioClient) {
         const smsBody = days === 7
-          ? \`Have you updated your ICC Junior Golf at Meadowbrook availability? Reply Y to confirm you're still good for \${label}, or N if not. Update your schedule: \${portalUrl}/portal\`
-          : \`Reminder: ICC Junior Golf at Meadowbrook is in 2 days (\${label})! Still available? Reply Y to confirm or N if plans changed. \${portalUrl}/portal\`;
+          ? `Have you updated your ICC Junior Golf at Meadowbrook availability? Reply Y to confirm you're still good for ${label}, or N if not. Update your schedule: ${portalUrl}/portal`
+          : `Reminder: ICC Junior Golf at Meadowbrook is in 2 days (${label})! Still available? Reply Y to confirm or N if plans changed. ${portalUrl}/portal`;
         try {
           await twilioClient.messages.create({ body: smsBody, from: process.env.TWILIO_PHONE_NUMBER, to: formatPhone(person.phone) });
           results.push({ name: person.fullName, type: 'sms', status: 'sent' });
@@ -70,10 +70,10 @@ export default async function handler(req, res) {
       // Web push
       if (person.pushSubscription && process.env.VAPID_PUBLIC_KEY) {
         const pushPayload = JSON.stringify({
-          title: 'ICC Junior Golf — Availability Check',
+          title: 'ICC Junior Golf - Availability Check',
           body: days === 7
-            ? \`Have you updated your Meadowbrook availability for \${label}?\`
-            : \`Reminder: Meadowbrook is in 2 days (\${label}). Tap to update.\`,
+            ? `Have you updated your Meadowbrook availability for ${label}?`
+            : `Reminder: Meadowbrook is in 2 days (${label}). Tap to update.`,
           url: portalUrl + '/portal',
         });
         try {
