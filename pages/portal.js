@@ -39,9 +39,9 @@ function LoginScreen({ onLogin }) {
       });
       const data = await res.json();
       if (res.ok) {
-        localStorage.setItem('portal_email', email.toLowerCase().trim());
-        localStorage.setItem('portal_password', password);
-        onLogin(data);
+        const { sessionToken, ...profile } = data;
+        sessionStorage.setItem('portal_token', sessionToken);
+        onLogin(profile);
       } else {
         setError(data.error || 'Login failed');
       }
@@ -141,12 +141,13 @@ function Dashboard({ profile, onLogout }) {
           userVisibleOnly: true,
           applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
         });
+        const token = sessionStorage.getItem('portal_token');
         await fetch('/api/subscribe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, subscription: sub }),
+          body: JSON.stringify({ sessionToken: token, subscription: sub }),
         });
-      } catch (err) { console.error('Push subscription failed:', err); }
+      } catch (err) { console.error('Push subscription failed:', err.message); }
     }
   }
 
@@ -157,18 +158,15 @@ function Dashboard({ profile, onLogout }) {
     setInstallPrompt(null);
   }
 
-  const email = typeof window !== 'undefined'
-    ? localStorage.getItem('portal_email') || profile.email
-    : profile.email;
-  const password = typeof window !== 'undefined'
-    ? localStorage.getItem('portal_password') || ''
-    : '';
+  function getToken() {
+    return typeof window !== 'undefined' ? sessionStorage.getItem('portal_token') || '' : '';
+  }
 
   async function apiCall(action, payload) {
     const res = await fetch('/api/portal/update', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, action, payload }),
+      body: JSON.stringify({ sessionToken: getToken(), action, payload }),
     });
     return res.json();
   }
@@ -475,13 +473,12 @@ export default function PortalPage() {
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    const email = localStorage.getItem('portal_email');
-    const password = localStorage.getItem('portal_password');
-    if (email && password) {
-      fetch('/api/portal/login', {
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('portal_token') : null;
+    if (token) {
+      fetch('/api/portal/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ sessionToken: token }),
       })
         .then(r => r.ok ? r.json() : null)
         .then(data => { if (data) setProfile(data); });
@@ -489,8 +486,16 @@ export default function PortalPage() {
   }, []);
 
   function handleLogout() {
-    localStorage.removeItem('portal_email');
-    localStorage.removeItem('portal_password');
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('portal_token') : null;
+    if (token) {
+      sessionStorage.removeItem('portal_token');
+      // Fire-and-forget server-side session invalidation
+      fetch('/api/portal/logout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionToken: token }),
+      }).catch(() => {});
+    }
     setProfile(null);
   }
 
