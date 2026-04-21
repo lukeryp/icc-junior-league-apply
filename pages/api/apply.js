@@ -29,7 +29,7 @@ async function notifyManager(applicantName, isUpdate) {
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
-  const { fullName, email, phone, juniorExperience, golfExperience, returning, bagRoom, availableDates, password } = req.body;
+  const { fullName, email, phone, juniorExperience, golfExperience, returning, availableDates, password } = req.body;
 
   if (!fullName?.trim() || !email?.trim() || !phone?.trim())
     return res.status(400).json({ error: "Missing required fields" });
@@ -52,7 +52,6 @@ export default async function handler(req, res) {
         juniorExperience: (juniorExperience || "").trim(),
         golfExperience: (golfExperience || "").trim(),
         returning: Boolean(returning),
-        bagRoom: Boolean(bagRoom),
         phone: phone.trim(),
         fullName: fullName.trim(),
       });
@@ -68,7 +67,6 @@ export default async function handler(req, res) {
       juniorExperience: (juniorExperience || "").trim(),
       golfExperience: (golfExperience || "").trim(),
       returning: Boolean(returning),
-      bagRoom: Boolean(bagRoom),
       availableDates,
       passwordHash,
       hours: [],
@@ -79,6 +77,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true, updated: false });
   } catch (e) {
     console.error("Submission error:", e);
-    return res.status(500).json({ error: "Failed to save submission" });
+    return res.status(500).json({ error: "Something went wrong. Please try again." });
   }
 }

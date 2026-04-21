@@ -209,7 +209,6 @@ export default function ApplyPage() {
     juniorExperience: '',
     golfExperience: '',
     returning: null,
-    bagRoom: null,
   });
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -248,7 +247,6 @@ export default function ApplyPage() {
       e.email = 'Enter a valid email address';
     if (!formData.phone.trim()) e.phone = 'Phone number is required';
     if (formData.returning === null) e.returning = 'Please select an option';
-    if (formData.bagRoom === null) e.bagRoom = 'Please select an option';
     if (!password || password.length < 6) e.password = 'Password must be at least 6 characters';
     if (password !== confirmPassword) e.confirmPassword = 'Passwords do not match';
     return e;
@@ -475,17 +473,10 @@ export default function ApplyPage() {
             </div>
             <p className="text-sm leading-relaxed" style={{ color: 'rgba(26,26,26,0.6)' }}>
               Walk alongside junior golfers during their rounds at Meadow Brook on Tuesdays throughout the
-              summer. You'll help with safety, golf etiquette, and course management. We ask you to commit
-              to 5+ days throughout the summer. If you know your schedule now, please fill it out. If not,
-              you can do it later.
+              summer. You'll help with safety, golf etiquette, and course management. A typical shift runs
+              from 8–9am until 1–2pm on Tuesdays. We ask you to commit to 5+ days throughout the summer.
+              If you know your schedule now, please fill it out. If not, you can do it later.
             </p>
-            <div
-              className="mt-3 pt-3 text-xs leading-relaxed"
-              style={{ borderTop: '1px solid rgba(0,0,0,0.07)', color: 'rgba(26,26,26,0.45)' }}
-            >
-              <span style={{ color: '#9e812f' }}>★</span> Candidates who are also interested in working in the
-              bag room are preferred.
-            </div>
           </div>
         </section>
 
@@ -585,21 +576,6 @@ export default function ApplyPage() {
                   }}
                 />
                 <FieldError msg={errors.returning} />
-              </div>
-              <div>
-                <FieldLabel
-                  label="Interested in also working in the bag room?"
-                  required
-                  sublabel="Candidates interested in bag room work are preferred."
-                />
-                <YesNoToggle
-                  value={formData.bagRoom}
-                  onChange={(val) => {
-                    setFormData((p) => ({ ...p, bagRoom: val }));
-                    setErrors((p) => ({ ...p, bagRoom: null }));
-                  }}
-                />
-                <FieldError msg={errors.bagRoom} />
               </div>
             </div>
           </FormSection>

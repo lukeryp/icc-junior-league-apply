@@ -233,11 +233,10 @@ function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDa
   }
 
   function downloadCSV() {
-    const header = ['Name', 'Email', 'Phone', 'Returning', 'Bag Room', 'Available Dates', 'Total Hours', 'Submitted'];
+    const header = ['Name', 'Email', 'Phone', 'Returning', 'Available Dates', 'Total Hours', 'Submitted'];
     const rows = allSubmissions.map(s => [
       s.fullName, s.email, s.phone,
       s.returning ? 'Yes' : 'No',
-      s.bagRoom ? 'Yes' : 'No',
       (s.availableDates || []).join('; '),
       totalHours(s.hours),
       formatDate(s.submittedAt),
@@ -254,7 +253,6 @@ function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDa
 
   // Stats
   const returning = submissions.filter((s) => s.returning).length;
-  const bagRoom = submissions.filter((s) => s.bagRoom).length;
 
   return (
     <main
@@ -299,11 +297,10 @@ function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDa
 
       <div className="max-w-5xl mx-auto px-4 py-6">
         {/* Stats row */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
+        <div className="grid grid-cols-2 gap-3 mb-6">
           {[
             { label: 'Total Applicants', value: total, color: '#9e812f' },
             { label: 'Returning Staff', value: returning, color: '#9e812f' },
-            { label: 'Bag Room Interest', value: bagRoom, color: '#9e812f' },
           ].map(({ label, value, color }) => (
             <div key={label} className="glass-card rounded-2xl p-4 text-center">
               <div className="text-3xl font-extrabold mb-0.5" style={{ fontFamily: "'kepler-std', Georgia, serif", color }}>
@@ -650,7 +647,6 @@ function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDa
                         )}
                         {sub.returning && <Badge green>Returning</Badge>}
                         {totalHours(sub.hours) > 0 && <Badge green>{totalHours(sub.hours)}h worked</Badge>}
-                        {sub.bagRoom && <Badge yellow>Bag Room</Badge>}
                       </div>
                       <p className="text-xs mt-0.5 truncate" style={{ color: 'rgba(26,26,26,0.4)' }}>
                         {sub.email} · {sub.availableDates.length} dates · {totalHours(sub.hours)}h · {formatDate(sub.submittedAt)}
@@ -691,7 +687,6 @@ function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDa
                           </p>
                           <div className="flex gap-2 flex-wrap">
                             <Badge green={sub.returning}>{sub.returning ? '✓ Returning' : '✗ Not returning'}</Badge>
-                            <Badge green={sub.bagRoom} yellow={!sub.bagRoom}>{sub.bagRoom ? '✓ Bag Room' : '✗ No bag room'}</Badge>
                           </div>
                         </div>
                       </div>
