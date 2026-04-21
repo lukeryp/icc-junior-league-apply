@@ -450,7 +450,6 @@ export default function ApplyPage() {
               { icon: '📍', label: 'Location', value: 'Meadow Brook Golf Course' },
               { icon: '📅', label: 'Schedule', value: 'Tuesdays · 8am – 3pm' },
               { icon: '💵', label: 'Pay Rate', value: '$15 per hour' },
-              { icon: '⛳', label: 'Perk', value: 'ICC Practice Privileges' },
             ].map(({ icon, label, value }) => (
               <div key={label} className="glass-card rounded-2xl p-4">
                 <div className="text-xl mb-2 leading-none">{icon}</div>
@@ -476,8 +475,9 @@ export default function ApplyPage() {
             </div>
             <p className="text-sm leading-relaxed" style={{ color: 'rgba(26,26,26,0.6)' }}>
               Walk alongside junior golfers during their rounds at Meadow Brook on Tuesdays throughout the
-              summer. You'll help with safety, golf etiquette, and course management. Each day you work earns
-              one day of practice privileges at Interlachen Country Club.
+              summer. You'll help with safety, golf etiquette, and course management. We ask you to commit
+              to 5+ days throughout the summer. If you know your schedule now, please fill it out. If not,
+              you can do it later.
             </p>
             <div
               className="mt-3 pt-3 text-xs leading-relaxed"
