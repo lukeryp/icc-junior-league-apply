@@ -122,6 +122,14 @@ function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDa
   const [hoursCount, setHoursCount] = useState('');
   const [hoursNote, setHoursNote] = useState('');
   const [hoursWorking, setHoursWorking] = useState(false);
+  // Edit contact
+  const [editingId, setEditingId] = useState(null);
+  const [editEmail, setEditEmail] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editError, setEditError] = useState('');
+  const [editSaving, setEditSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
 
   useEffect(() => {
     if ('Notification' in window) setNotifStatus(Notification.permission);
@@ -218,6 +226,93 @@ function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDa
         onRefresh();
       }
     } finally { setHoursWorking(false); }
+  }
+
+  function startEdit(sub) {
+    setEditingId(sub.id);
+    setEditEmail(sub.email || '');
+    setEditPhone(sub.phone || '');
+    setEditError('');
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setEditEmail('');
+    setEditPhone('');
+    setEditError('');
+  }
+
+  async function saveEdit(originalEmail) {
+    setEditSaving(true);
+    setEditError('');
+    try {
+      const res = await fetch('/api/submissions', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password: managerPassword,
+          email: originalEmail,
+          updates: { email: editEmail.trim(), phone: editPhone.trim() },
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setEditError(data.error || 'Failed to save');
+        return;
+      }
+      cancelEdit();
+      onRefresh();
+    } catch {
+      setEditError('Network error — try again');
+    } finally {
+      setEditSaving(false);
+    }
+  }
+
+  async function deleteApplicant(sub) {
+    if (!confirm(`Delete ${sub.fullName}? This cannot be undone.`)) return;
+    setDeletingId(sub.id);
+    try {
+      const res = await fetch('/api/submissions', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: managerPassword, email: sub.email }),
+      });
+      if (res.ok) {
+        setSelectedIds(p => p.filter(id => id !== sub.id));
+        if (expandedId === sub.id) setExpandedId(null);
+        onRefresh();
+      } else {
+        alert('Failed to delete. Try again.');
+      }
+    } catch {
+      alert('Network error — try again');
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  async function deleteSelected() {
+    if (selectedSubs.length === 0) return;
+    if (!confirm(`Delete ${selectedSubs.length} applicant${selectedSubs.length !== 1 ? 's' : ''}? This cannot be undone.`)) return;
+    setBulkDeleting(true);
+    try {
+      const res = await fetch('/api/submissions', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: managerPassword, emails: selectedSubs.map(s => s.email) }),
+      });
+      if (res.ok) {
+        clearSelect();
+        onRefresh();
+      } else {
+        alert('Failed to delete. Try again.');
+      }
+    } catch {
+      alert('Network error — try again');
+    } finally {
+      setBulkDeleting(false);
+    }
   }
 
   async function deleteHoursEntry(email, entryId) {
@@ -460,6 +555,13 @@ function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDa
                     Clear
                   </button>
                 )}
+                {selectedIds.length > 0 && (
+                  <button type="button" onClick={deleteSelected} disabled={bulkDeleting}
+                    className="text-xs px-3 py-1.5 rounded-lg font-semibold transition-colors"
+                    style={{ background: 'rgba(185,28,28,0.06)', color: 'rgba(185,28,28,0.85)', border: '1px solid rgba(185,28,28,0.2)', opacity: bulkDeleting ? 0.6 : 1 }}>
+                    {bulkDeleting ? 'Deleting…' : `Delete ${selectedIds.length}`}
+                  </button>
+                )}
               </div>
               {selectedIds.length > 0 && (
                 <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
@@ -675,11 +777,49 @@ function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDa
                     >
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
                         <div>
-                          <p className="text-[10px] uppercase tracking-widest mb-1" style={{ color: 'rgba(26,26,26,0.35)' }}>
-                            Contact
-                          </p>
-                          <p className="text-sm" style={{ color: 'rgba(26,26,26,0.8)' }}>{sub.email}</p>
-                          <p className="text-sm" style={{ color: 'rgba(26,26,26,0.8)' }}>{sub.phone}</p>
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="text-[10px] uppercase tracking-widest" style={{ color: 'rgba(26,26,26,0.35)' }}>
+                              Contact
+                            </p>
+                            {editingId !== sub.id ? (
+                              <button type="button" onClick={() => startEdit(sub)}
+                                className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded transition-colors"
+                                style={{ color: '#9e812f', background: 'rgba(158,129,47,0.08)', border: '1px solid rgba(158,129,47,0.18)' }}>
+                                Edit
+                              </button>
+                            ) : (
+                              <button type="button" onClick={cancelEdit} disabled={editSaving}
+                                className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded transition-colors"
+                                style={{ color: 'rgba(26,26,26,0.4)', background: 'transparent', border: '1px solid rgba(0,0,0,0.1)' }}>
+                                Cancel
+                              </button>
+                            )}
+                          </div>
+                          {editingId === sub.id ? (
+                            <div className="space-y-2">
+                              <input type="email" value={editEmail} onChange={e => setEditEmail(e.target.value)}
+                                placeholder="Email"
+                                className="w-full text-sm rounded-lg px-2.5 py-2 outline-none"
+                                style={{ background: 'white', border: '1px solid rgba(0,0,0,0.12)', color: '#1a1a1a', fontFamily: "proxima-nova, 'Helvetica Neue', sans-serif" }} />
+                              <input type="tel" value={editPhone} onChange={e => setEditPhone(e.target.value)}
+                                placeholder="Phone"
+                                className="w-full text-sm rounded-lg px-2.5 py-2 outline-none"
+                                style={{ background: 'white', border: '1px solid rgba(0,0,0,0.12)', color: '#1a1a1a', fontFamily: "proxima-nova, 'Helvetica Neue', sans-serif" }} />
+                              {editError && (
+                                <p className="text-xs" style={{ color: 'rgba(185,28,28,0.8)' }}>{editError}</p>
+                              )}
+                              <button type="button" onClick={() => saveEdit(sub.email)} disabled={editSaving || !editEmail.trim() || !editPhone.trim()}
+                                className="w-full py-2 rounded-lg text-xs font-bold transition-all"
+                                style={{ background: '#9e812f', color: 'white', opacity: (editSaving || !editEmail.trim() || !editPhone.trim()) ? 0.45 : 1 }}>
+                                {editSaving ? 'Saving…' : 'Save Changes'}
+                              </button>
+                            </div>
+                          ) : (
+                            <>
+                              <p className="text-sm" style={{ color: 'rgba(26,26,26,0.8)' }}>{sub.email}</p>
+                              <p className="text-sm" style={{ color: 'rgba(26,26,26,0.8)' }}>{sub.phone}</p>
+                            </>
+                          )}
                         </div>
                         <div>
                           <p className="text-[10px] uppercase tracking-widest mb-1" style={{ color: 'rgba(26,26,26,0.35)' }}>
@@ -808,6 +948,15 @@ function Dashboard({ submissions, allSubmissions, total, filterDate, setFilterDa
                             </button>
                           </div>
                         )}
+                      </div>
+
+                      {/* Danger zone — delete applicant */}
+                      <div className="pt-2" style={{ borderTop: '1px solid rgba(0,0,0,0.07)' }}>
+                        <button type="button" onClick={() => deleteApplicant(sub)} disabled={deletingId === sub.id}
+                          className="text-xs px-3 py-2 rounded-lg font-semibold transition-colors"
+                          style={{ background: 'rgba(185,28,28,0.04)', color: 'rgba(185,28,28,0.85)', border: '1px solid rgba(185,28,28,0.2)', opacity: deletingId === sub.id ? 0.6 : 1 }}>
+                          {deletingId === sub.id ? 'Deleting…' : '🗑 Delete Applicant'}
+                        </button>
                       </div>
                     </div>
                   )}
